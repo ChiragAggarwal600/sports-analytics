@@ -12,6 +12,7 @@ import {
   Legend,
   ArcElement,
 } from 'chart.js';
+import { ChartBarIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { format } from 'date-fns';
 
@@ -64,16 +65,23 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">PR Analytics Dashboard</h1>
-        <div className="flex gap-4">
-          <SportSelector value={selectedSport} onChange={setSelectedSport} />
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6 bg-white/60 backdrop-blur-sm rounded-3xl p-8 border border-gray-200/50 shadow-xl">
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent">
+            Sports PR Analytics
+          </h1>
+          <p className="text-gray-600 mt-2 text-lg">Real-time insights across all sports campaigns</p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative">
+            <SportSelector value={selectedSport} onChange={setSelectedSport} />
+          </div>
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-6 py-3 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all duration-300 shadow-lg font-medium text-gray-700"
           >
             <option value="1d">Last 24 Hours</option>
             <option value="7d">Last 7 Days</option>
@@ -112,14 +120,34 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Sentiment Trends</h2>
-          <SentimentTrendChart data={dashboardData?.sentimentTrends} />
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-xl border border-gray-200/50 hover:shadow-2xl transition-all duration-500">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-lg">
+              <ChatBubbleLeftRightIcon className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Sentiment Trends</h2>
+              <p className="text-gray-600">Real-time sentiment analysis</p>
+            </div>
+          </div>
+          <div className="relative">
+            <SentimentTrendChart data={dashboardData?.sentimentTrends} />
+          </div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Engagement Heatmap</h2>
-          <EngagementHeatmap data={dashboardData?.engagementData} />
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-xl border border-gray-200/50 hover:shadow-2xl transition-all duration-500">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg">
+              <ChartBarIcon className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Engagement Heatmap</h2>
+              <p className="text-gray-600">Audience interaction patterns</p>
+            </div>
+          </div>
+          <div className="relative">
+            <EngagementHeatmap data={dashboardData?.engagementData} />
+          </div>
         </div>
       </div>
 
@@ -195,35 +223,81 @@ const Dashboard: React.FC = () => {
   );
 };
 
+type ColorKey = 'blue' | 'green' | 'purple' | 'red';
+
 const MetricCard: React.FC<{
   title: string;
   value: string;
   change: number;
-  color: string;
+  color: ColorKey;
 }> = ({ title, value, change, color }) => {
-  const colorClasses = {
-    blue: 'bg-blue-100 text-blue-800',
-    green: 'bg-green-100 text-green-800',
-    purple: 'bg-purple-100 text-purple-800',
-    red: 'bg-red-100 text-red-800',
+  const colorClasses: Record<ColorKey, { bg: string; text: string; gradient: string; shadow: string }> = {
+    blue: { 
+      bg: 'from-blue-50 to-blue-100', 
+      text: 'text-blue-800', 
+      gradient: 'from-blue-500 to-blue-600',
+      shadow: 'shadow-blue-500/20'
+    },
+    green: { 
+      bg: 'from-green-50 to-green-100', 
+      text: 'text-green-800', 
+      gradient: 'from-green-500 to-green-600',
+      shadow: 'shadow-green-500/20'
+    },
+    purple: { 
+      bg: 'from-purple-50 to-purple-100', 
+      text: 'text-purple-800', 
+      gradient: 'from-purple-500 to-purple-600',
+      shadow: 'shadow-purple-500/20'
+    },
+    red: { 
+      bg: 'from-red-50 to-red-100', 
+      text: 'text-red-800', 
+      gradient: 'from-red-500 to-red-600',
+      shadow: 'shadow-red-500/20'
+    },
   };
 
+  const colorConfig = colorClasses[color];
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-gray-600">{title}</p>
-          <p className="text-2xl font-bold mt-1">{value}</p>
+    <div className={`relative bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-xl border border-gray-200/50 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden group ${colorConfig.shadow}`}>
+      {/* Background Gradient */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${colorConfig.bg} opacity-50 group-hover:opacity-70 transition-opacity duration-500`}></div>
+      
+      {/* Content */}
+      <div className="relative z-10">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <p className="text-sm font-medium text-gray-600 mb-2 uppercase tracking-wider">{title}</p>
+            <p className="text-4xl font-bold text-gray-900 mb-1">{value}</p>
+          </div>
+          <div className={`px-4 py-2 rounded-2xl text-sm font-bold shadow-lg ${colorConfig.text} bg-gradient-to-r ${colorConfig.bg} border border-white/50`}>
+            {change > 0 ? '+' : ''}
+            {change.toFixed(1)}%
+          </div>
         </div>
-        <div
-          className={`px-3 py-1 rounded-full text-sm font-medium ${
-            colorClasses[color]
-          }`}
-        >
-          {change > 0 ? '+' : ''}
-          {change.toFixed(1)}%
+        
+        {/* Progress Bar */}
+        <div className="w-full bg-gray-200/50 rounded-full h-2 mb-3">
+          <div 
+            className={`h-2 rounded-full bg-gradient-to-r ${colorConfig.gradient} transition-all duration-1000 ease-out`}
+            style={{ width: `${Math.min(Math.abs(change) * 10, 100)}%` }}
+          ></div>
+        </div>
+        
+        {/* Trend Indicator */}
+        <div className="flex items-center gap-2">
+          <div className={`w-3 h-3 rounded-full ${change > 0 ? 'bg-green-500 animate-pulse' : change < 0 ? 'bg-red-500 animate-pulse' : 'bg-gray-400'}`}></div>
+          <span className="text-xs font-medium text-gray-600">
+            {change > 0 ? 'Trending Up' : change < 0 ? 'Trending Down' : 'Stable'}
+          </span>
         </div>
       </div>
+      
+      {/* Decorative Elements */}
+      <div className="absolute -top-10 -right-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
+      <div className="absolute -bottom-5 -left-5 w-15 h-15 bg-white/10 rounded-full blur-lg"></div>
     </div>
   );
 };
