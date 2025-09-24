@@ -1,0 +1,127 @@
+[tool.poetry]
+name = "cross-sport-pr-analytics"
+version = "1.0.0"
+description = "Cross-Sport ML Model for Brand PR & Fan Sentiment Analysis"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [{include = "*"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.104.1"
+uvicorn = {extras = ["standard"], version = "^0.24.0"}
+pandas = "^2.1.3"
+numpy = "^1.24.3"
+scikit-learn = "^1.3.2"
+xgboost = "^2.0.2"
+torch = "^2.1.1"
+transformers = "^4.35.2"
+tensorflow = "^2.14.0"
+psycopg2-binary = "^2.9.9"
+sqlalchemy = "^2.0.23"
+alembic = "^1.12.1"
+pydantic = "^2.5.0"
+pydantic-settings = "^2.1.0"
+python-dotenv = "^1.0.0"
+redis = "^5.0.1"
+celery = "^5.3.4"
+python-multipart = "^0.0.6"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+kaggle = "^1.5.16"
+joblib = "^1.3.2"
+matplotlib = "^3.8.2"
+seaborn = "^0.13.0"
+httpx = "^0.25.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
+black = "^23.11.0"
+isort = "^5.12.0"
+flake8 = "^6.1.0"
+mypy = "^1.7.0"
+pre-commit = "^3.5.0"
+ipython = "^8.17.2"
+jupyter = "^1.0.0"
+notebook = "^7.0.6"
+
+[tool.poetry.scripts]
+start = "uvicorn api.main:app --reload --host 0.0.0.0 --port 8000"
+train = "python scripts/train_models.py"
+download-data = "python scripts/download_datasets.py"
+test = "pytest tests/ -v"
+format = "black . && isort ."
+lint = "flake8 . && mypy ."
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+exclude = [
+    "migrations/",
+    "venv/",
+    ".venv/",
+]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --cov=. --cov-report=term-missing"
+testpaths = [
+    "tests",
+]
+python_files = "test_*.py"
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/.venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
