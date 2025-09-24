@@ -4,7 +4,13 @@ version = "1.0.0"
 description = "Cross-Sport ML Model for Brand PR & Fan Sentiment Analysis"
 authors = ["Your Name <your.email@example.com>"]
 readme = "README.md"
-packages = [{include = "*"}]
+packages = [
+    {include = "api"},
+    {include = "config"},
+    {include = "data"},
+    {include = "models"},
+    {include = "utils"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -47,13 +53,10 @@ ipython = "^8.17.2"
 jupyter = "^1.0.0"
 notebook = "^7.0.6"
 
-[tool.poetry.scripts]
-start = "uvicorn api.main:app --reload --host 0.0.0.0 --port 8000"
-train = "python scripts/train_models.py"
-download-data = "python scripts/download_datasets.py"
-test = "pytest tests/ -v"
-format = "black . && isort ."
-lint = "flake8 . && mypy ."
+# Use poetry run commands instead of scripts
+# poetry run uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+# poetry run python scripts/train_models.py
+# poetry run python scripts/download_datasets.py
 
 [build-system]
 requires = ["poetry-core"]
