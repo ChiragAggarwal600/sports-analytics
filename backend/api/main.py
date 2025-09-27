@@ -6,6 +6,7 @@ from typing import Optional
 
 from config.settings import settings
 from api.routes import sentiment, engagement, pr_strategy
+from api.model_registry import model_registry, register_model
 from models.sentiment_model import SentimentAnalyzer
 from models.engagement_model import EngagementPredictor
 from models.rl_module import RLPROptimizer
@@ -14,18 +15,16 @@ from models.rl_module import RLPROptimizer
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Global model instances
-models = {}
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Initialize models on startup"""
     logger.info("Loading ML models...")
     
     try:
-        models['sentiment'] = SentimentAnalyzer()
-        models['engagement'] = EngagementPredictor()
-        models['rl_optimizer'] = RLPROptimizer()
+        register_model('sentiment', SentimentAnalyzer())
+        register_model('engagement', EngagementPredictor())
+        register_model('rl_optimizer', RLPROptimizer())
+        model_registry.set_initialized(True)
         logger.info("Models loaded successfully")
     except Exception as e:
         logger.error(f"Failed to load models: {e}")
@@ -33,6 +32,7 @@ async def lifespan(app: FastAPI):
     yield
     
     # Cleanup
+    model_registry.clear()
     logger.info("Shutting down...")
 
 # Create FastAPI app
@@ -56,6 +56,13 @@ app.include_router(sentiment.router, prefix=f"{settings.API_PREFIX}/sentiment", 
 app.include_router(engagement.router, prefix=f"{settings.API_PREFIX}/engagement", tags=["engagement"])
 app.include_router(pr_strategy.router, prefix=f"{settings.API_PREFIX}/pr-strategy", tags=["pr_strategy"])
 
+# Include pipeline routes
+try:
+    from api.routes.pipeline_routes import router as pipeline_router
+    app.include_router(pipeline_router, prefix=f"{settings.API_PREFIX}")
+except ImportError as e:
+    logger.warning(f"Pipeline routes not available: {e}")
+
 @app.get("/")
 async def root():
     return {
@@ -68,9 +75,5 @@ async def root():
 async def health_check():
     return {
         "status": "healthy",
-        "models_loaded": len(models) > 0
+        "models_loaded": model_registry.is_initialized()
     }
-
-# Export models for use in routes
-def get_models():
-    return models
