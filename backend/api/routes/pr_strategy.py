@@ -4,7 +4,7 @@ from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 import numpy as np
 
-from api.model_registry import get_models
+from api.main import get_models
 
 router = APIRouter()
 

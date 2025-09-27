@@ -4,7 +4,7 @@ from typing import Dict, List, Optional
 import numpy as np
 from datetime import datetime
 
-from api.model_registry import get_models
+from api.main import get_models
 from models.cross_sport_normalizer import CrossSportNormalizer
 from models.engagement_model import EngagementFeatureExtractor
 
