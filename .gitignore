@@ -8,11 +8,8 @@
 !/.env.example
 
 # Python / Backend
-backend/**/__pycache__/
 backend/__pycache__/
-backend/**/*.pyc
-backend/**/*.pyo
-backend/**/*.pyd
+backend/*.pyc
 backend/.venv/
 backend/venv/
 backend/env/
@@ -26,30 +23,6 @@ backend/.tox/
 backend/htmlcov/
 backend/.coverage
 backend/instance/
-backend/**/.coverage.*
-
-# Python cache files
-**/__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
 # Data files
 backend/**/*.csv
 backend/**/*.sqlite
